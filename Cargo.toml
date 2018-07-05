@@ -2,6 +2,10 @@
 name = "diesel_enum_derive"
 version = "0.1.0"
 authors = ["Terry Raimondo <terry.raimondo@gmail.com>"]
+description = "Simple Enum derive for [Postgres only] Varchar fields"
+license = "MIT"
+homepage = "https://github.com/terry90/diesel-enum-derive"
+repository = "https://github.com/terry90/diesel-enum-derive"
 
 [lib]
 proc-macro = true
