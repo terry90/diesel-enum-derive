@@ -1,4 +1,4 @@
-#![recursion_limit = "128"]
+#![recursion_limit = "256"]
 extern crate proc_macro;
 extern crate syn;
 #[macro_use]
@@ -50,6 +50,17 @@ fn impl_diesel_enum(
         .collect::<Vec<_>>();
 
     let expanded = quote! {
+        use diesel::deserialize::{self, FromSql, FromSqlRow};
+        use diesel::dsl::AsExprOf;
+        use diesel::expression::AsExpression;
+        use diesel::pg::Pg;
+        use diesel::row::Row;
+        use diesel::serialize::{self, IsNull, Output, ToSql};
+        use diesel::sql_types::VarChar;
+        use std::error::Error;
+        use std::fmt;
+        use std::io::Write;
+
         impl fmt::Display for #name {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 write!(

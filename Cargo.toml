@@ -1,6 +1,6 @@
 [package]
 name = "diesel_enum_derive"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Terry Raimondo <terry.raimondo@gmail.com>"]
 description = "Simple Enum derive for [Postgres only] Varchar fields"
 license = "MIT"
