@@ -50,7 +50,7 @@ fn impl_diesel_enum(
         .collect::<Vec<_>>();
 
     let expanded = quote! {
-        use diesel::deserialize::{self, FromSql, FromSqlRow};
+        use diesel::deserialize::{self, FromSql, FromSqlRow, Queryable};
         use diesel::dsl::AsExprOf;
         use diesel::expression::AsExpression;
         use diesel::pg::Pg;
