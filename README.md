@@ -2,7 +2,7 @@
 
 Please note that this crate is aimed to be simple and stick to a simple usage, no fancy configuration, only `Pg` with Text fields.
 
-For a more advanced usage, see: [adwhit/diesel-derive-enum](https://github.com/adwhit/diesel-derive-enum)
+For a more advanced usage, see this crate: [adwhit/diesel-derive-enum](https://github.com/adwhit/diesel-derive-enum)
 
 ## Usage
 
