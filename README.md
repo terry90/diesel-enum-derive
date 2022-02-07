@@ -14,4 +14,4 @@ pub enum Role {
 }
 ```
 
-The method `Role::Admin.db_value()` return the database representation of this variant.
+The method `Role::Admin.db_value()` returns the database representation of this variant.
