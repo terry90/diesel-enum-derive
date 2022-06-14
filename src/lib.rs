@@ -6,7 +6,7 @@ extern crate quote;
 extern crate heck;
 extern crate proc_macro2;
 
-use heck::SnakeCase;
+use heck::ToSnakeCase;
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use syn::Ident;
@@ -41,7 +41,6 @@ fn impl_diesel_enum(name: Ident, variants: &[Variant]) -> TokenStream {
     let name_iter = std::iter::repeat(&name); // need an iterator for proc macro repeat pattern
     let name_iter1 = std::iter::repeat(&name);
     let name_iter2 = std::iter::repeat(&name);
-    let name_iter3 = std::iter::repeat(&name);
 
     let scope = Ident::new(&format!("diesel_enum_{}", name), Span::call_site());
 
@@ -55,7 +54,7 @@ fn impl_diesel_enum(name: Ident, variants: &[Variant]) -> TokenStream {
                 deserialize::{self, FromSql, FromSqlRow, Queryable},
                 dsl::AsExprOf,
                 expression::AsExpression,
-                pg::Pg,
+                pg::{Pg, PgValue},
                 row::Row,
                 serialize::{self, IsNull, Output, ToSql},
                 sql_types::{Nullable, VarChar},
@@ -99,7 +98,7 @@ fn impl_diesel_enum(name: Ident, variants: &[Variant]) -> TokenStream {
             }
 
             impl ToSql<VarChar, Pg> for #name {
-                fn to_sql<W: Write>(&self, out: &mut Output<W, Pg>) -> serialize::Result {
+                fn to_sql(&self, out: &mut Output<Pg>) -> serialize::Result {
                     match *self {
                         #(#name_iter1::#keys => out.write_all(#values.as_bytes())?,)*
                     }
@@ -108,24 +107,10 @@ fn impl_diesel_enum(name: Ident, variants: &[Variant]) -> TokenStream {
             }
 
             impl FromSql<VarChar, Pg> for #name {
-                fn from_sql(bytes: Option<&[u8]>) -> deserialize::Result<Self> {
-                    match match bytes.map(|b| String::from_utf8_lossy(b).to_string()) {
-                        Some(bytes) => bytes,
-                        None => return Err(Box::new(::diesel::result::UnexpectedNullError)),
-                    }
-                    .as_ref()
-                    {
+                fn from_sql(bytes: PgValue) -> deserialize::Result<Self> {
+                    match String::from_utf8_lossy(bytes.as_bytes()).to_string().as_ref() {
                         #(#values => Ok(#name_iter2::#keys),)*
                         v => Err(format!("Unknown value {:?} for {}", v, stringify!(#name)).into()),
-                    }
-                }
-            }
-
-            impl FromSqlRow<VarChar, Pg> for #name {
-                fn build_from_row<R: Row<Pg>>(row: &mut R) -> Result<Self, Box<Error + Send + Sync>> {
-                    match String::build_from_row(row)?.as_ref() {
-                        #(#values => Ok(#name_iter3::#keys),)*
-                        v => Err(format!("Unknown value {} for {}", v, stringify!(#name)).into()),
                     }
                 }
             }
@@ -133,8 +118,8 @@ fn impl_diesel_enum(name: Ident, variants: &[Variant]) -> TokenStream {
             impl Queryable<VarChar, Pg> for #name {
                 type Row = Self;
 
-                fn build(row: Self::Row) -> Self {
-                    row
+                fn build(row: Self::Row) -> deserialize::Result<Self> {
+                    Ok(row)
                 }
             }
         }
