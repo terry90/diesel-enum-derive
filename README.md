@@ -15,3 +15,15 @@ pub enum Role {
 ```
 
 The method `Role::Admin.db_value()` returns the database representation of this variant.
+
+## Version compatibility
+
+This crate is intended to be used with the [Diesel crate](https://crates.io/crates/diesel), but it's not a direct dependency of this crate.
+Because of this reason, the version dependencies are not always clear, which can cause weird compilation errors in case of a mismatch.
+
+The version compatibility is specified in the following table:
+
+| Diesel version | Diesel-enum-derive version |
+| -------------- | -------------------------- |
+| <=1.4.8 | 0.1.4 |
+| \>=2.0.0 | 1.0.0 |
