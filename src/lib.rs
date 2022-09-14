@@ -41,6 +41,7 @@ fn impl_diesel_enum(name: Ident, variants: &[Variant]) -> TokenStream {
     let name_iter = std::iter::repeat(&name); // need an iterator for proc macro repeat pattern
     let name_iter1 = std::iter::repeat(&name);
     let name_iter2 = std::iter::repeat(&name);
+    let name_iter3 = std::iter::repeat(&name);
 
     let scope = Ident::new(&format!("diesel_enum_{}", name), Span::call_site());
 
@@ -101,6 +102,15 @@ fn impl_diesel_enum(name: Ident, variants: &[Variant]) -> TokenStream {
                 fn to_sql(&self, out: &mut Output<Pg>) -> serialize::Result {
                     match *self {
                         #(#name_iter1::#keys => out.write_all(#values.as_bytes())?,)*
+                    }
+                    Ok(IsNull::No)
+                }
+            }
+
+            impl ToSql<Nullable<VarChar>, Pg> for #name {
+                fn to_sql(&self, out: &mut Output<Pg>) -> serialize::Result {
+                    match *self {
+                        #(#name_iter3::#keys => out.write_all(#values.as_bytes())?,)*
                     }
                     Ok(IsNull::No)
                 }
