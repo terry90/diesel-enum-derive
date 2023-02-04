@@ -43,7 +43,7 @@ fn impl_diesel_enum(name: Ident, variants: &[Variant]) -> TokenStream {
     let name_iter2 = std::iter::repeat(&name);
     let name_iter3 = std::iter::repeat(&name);
 
-    let scope = Ident::new(&format!("diesel_enum_{}", name), Span::call_site());
+    let scope = Ident::new(&format!("diesel_enum_{name}"), Span::call_site());
 
     let keys = &variants.iter().map(|v| v.key.clone()).collect::<Vec<_>>();
     let values = &variants.iter().map(|v| v.value.clone()).collect::<Vec<_>>();
