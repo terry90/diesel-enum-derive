@@ -4,6 +4,13 @@ Please note that this crate is aimed to be simple and stick to a simple usage, n
 
 For a more advanced usage, see this crate: [adwhit/diesel-derive-enum](https://github.com/adwhit/diesel-derive-enum)
 
+## Features
+
+This crate has two features:
+
+* `heck` uses `heck::ToSnakeCase` to transform enum values. This feature is enabled by default.
+* `plain` keep enum values, use with `default-features = false`.
+
 ## Usage
 
 ```rust
@@ -25,5 +32,5 @@ The version compatibility is specified in the following table:
 
 | Diesel version | Diesel-enum-derive version |
 | -------------- | -------------------------- |
-| <=1.4.8 | 0.1.4 |
-| \>=2.0.0 | 1.0.0 |
+| <=1.4.8        | 0.1.4                      |
+| \>=2.0.0       | 1.0.0                      |

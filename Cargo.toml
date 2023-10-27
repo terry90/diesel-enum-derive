@@ -1,6 +1,6 @@
 [package]
 name = "diesel_enum_derive"
-version = "1.0.1"
+version = "1.0.2"
 authors = ["Terry Raimondo <terry.raimondo@gmail.com>"]
 description = "Simple Enum derive for [Postgres only] Varchar fields"
 license = "MIT"
@@ -10,8 +10,13 @@ repository = "https://github.com/terry90/diesel-enum-derive"
 [lib]
 proc-macro = true
 
+[features]
+default = ["heck"]
+heck = ["dep:heck"]
+plain = []
+
 [dependencies]
 quote = "1.0.18"
 syn = { version = "1.0.96", features = ["derive"] }
 proc-macro2 = "1.0.39"
-heck = "0.4.0"
+heck = { optional = true, version = "0.4.0" }

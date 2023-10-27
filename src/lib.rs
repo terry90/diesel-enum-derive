@@ -3,10 +3,13 @@ extern crate proc_macro;
 extern crate syn;
 #[macro_use]
 extern crate quote;
-extern crate heck;
 extern crate proc_macro2;
 
+#[cfg(feature = "heck")]
+extern crate heck;
+#[cfg(feature = "heck")]
 use heck::ToSnakeCase;
+
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use syn::Ident;
@@ -25,9 +28,13 @@ pub fn diesel_enum(input: TokenStream) -> TokenStream {
     if let syn::Data::Enum(enum_data) = ast.data {
         let mut variants = Vec::new();
         for variant in enum_data.variants.into_iter() {
+            #[cfg(feature = "heck")]
+            let value = variant.ident.to_string().to_snake_case();
+            #[cfg(feature = "plain")]
+            let value = variant.ident.to_string();
             variants.push(Variant {
                 key: variant.ident.clone(),
-                value: variant.ident.to_string().to_snake_case(),
+                value,
             });
         }
 
@@ -43,7 +50,7 @@ fn impl_diesel_enum(name: Ident, variants: &[Variant]) -> TokenStream {
     let name_iter2 = std::iter::repeat(&name);
     let name_iter3 = std::iter::repeat(&name);
 
-    let scope = Ident::new(&format!("diesel_enum_{}", name), Span::call_site());
+    let scope = Ident::new(&format!("diesel_enum_{name}"), Span::call_site());
 
     let keys = &variants.iter().map(|v| v.key.clone()).collect::<Vec<_>>();
     let values = &variants.iter().map(|v| v.value.clone()).collect::<Vec<_>>();
